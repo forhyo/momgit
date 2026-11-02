@@ -1,90 +1,111 @@
-/** 축제 북 배경 반주 — 아주 가벼운 8비트 루프 (파일 없음) */
+/** 배경 음악 — 사용자가 준 MP3 를 복사해 public/audio 에 둔다.
+ *  Web Audio GainNode 로 볼륨을 조절해서 아이폰에서도 게임 효과음과 균형을 맞춘다. */
 
 import { audioNodes, unlockAudio } from './sfx';
+import { getSettings } from '../store';
 
-let timer: number | null = null;
-let nextTime = 0;
-let step = 0;
-const BPM = 96;
-const STEP = 60 / BPM / 2; // 8분음표
-const BASS = [110, 110, 130.81, 130.81, 98, 98, 146.83, 130.81];
+let el: HTMLAudioElement | null = null;
+let gain: GainNode | null = null;
+let source: MediaElementAudioSourceNode | null = null;
+let want = false;
+let retryArmed = false;
 
-function kick(t: number, gain: number) {
-  const { ac, master } = audioNodes();
-  if (!ac || !master) return;
-  const o = ac.createOscillator();
-  const g = ac.createGain();
-  o.type = 'sine';
-  o.frequency.setValueAtTime(150, t);
-  o.frequency.exponentialRampToValueAtTime(48, t + 0.16);
-  g.gain.setValueAtTime(gain, t);
-  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
-  o.connect(g);
-  g.connect(master);
-  o.start(t);
-  o.stop(t + 0.24);
+function audioEl() {
+  if (el) return el;
+  el = document.getElementById('bgm') as HTMLAudioElement | null;
+  if (el) {
+    el.loop = true;
+    try {
+      el.volume = 1;
+    } catch {
+      /* iOS 는 volume 읽기 전용일 수 있다 — GainNode 로 조절한다 */
+    }
+  }
+  return el;
 }
 
-function hat(t: number, gain: number) {
-  const { ac, master } = audioNodes();
-  if (!ac || !master) return;
-  const len = Math.floor(ac.sampleRate * 0.05);
-  const buf = ac.createBuffer(1, len, ac.sampleRate);
-  const d = buf.getChannelData(0);
-  for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
-  const src = ac.createBufferSource();
-  src.buffer = buf;
-  const f = ac.createBiquadFilter();
-  f.type = 'highpass';
-  f.frequency.value = 7000;
-  const g = ac.createGain();
-  g.gain.value = gain;
-  src.connect(f);
-  f.connect(g);
-  g.connect(master);
-  src.start(t);
+function level() {
+  return getSettings().music ? Math.min(1, Math.max(0, getSettings().musicVolume / 100)) : 0;
 }
 
-function bass(t: number, freq: number) {
-  const { ac, master } = audioNodes();
-  if (!ac || !master) return;
-  const o = ac.createOscillator();
-  const g = ac.createGain();
-  o.type = 'triangle';
-  o.frequency.value = freq;
-  g.gain.setValueAtTime(0.0001, t);
-  g.gain.exponentialRampToValueAtTime(0.07, t + 0.02);
-  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.2);
-  o.connect(g);
-  g.connect(master);
-  o.start(t);
-  o.stop(t + 0.22);
-}
-
-function schedule() {
+function applyGain(value: number, immediate = false) {
+  if (!gain) {
+    if (el) el.volume = value;
+    return;
+  }
   const { ac } = audioNodes();
   if (!ac) return;
-  while (nextTime < ac.currentTime + 0.16) {
-    if (step % 2 === 0) kick(nextTime, step % 8 === 0 ? 0.2 : 0.12);
-    if (step % 4 === 2) hat(nextTime, 0.045);
-    if (step % 2 === 1) hat(nextTime, 0.025);
-    if (step % 8 === 0 || step % 8 === 6) bass(nextTime, BASS[step % 8]);
-    nextTime += STEP;
-    step++;
+  const t = ac.currentTime;
+  gain.gain.cancelScheduledValues(t);
+  if (immediate) {
+    gain.gain.setValueAtTime(value, t);
+  } else {
+    gain.gain.setTargetAtTime(value, t, 0.08);
   }
 }
 
-export function startMusic() {
-  unlockAudio();
+function connectGain() {
+  if (gain || !el) return;
   const { ac } = audioNodes();
   if (!ac) return;
-  stopMusic();
-  nextTime = ac.currentTime + 0.05;
-  step = 0;
-  timer = window.setInterval(schedule, 25);
+  try {
+    source = ac.createMediaElementSource(el);
+    gain = ac.createGain();
+    gain.gain.value = 0;
+    source.connect(gain);
+    gain.connect(ac.destination);
+    try {
+      el.volume = 1;
+    } catch {
+      /* noop */
+    }
+  } catch {
+    // 이미 연결됐거나 Web Audio 를 막은 브라우저 — el.volume 으로 대체
+    source = null;
+    gain = null;
+  }
+}
+
+function armRetry() {
+  if (retryArmed) return;
+  retryArmed = true;
+  const retry = () => {
+    window.removeEventListener('pointerdown', retry);
+    window.removeEventListener('keydown', retry);
+    retryArmed = false;
+    if (want) startMusic();
+  };
+  window.addEventListener('pointerdown', retry, { once: true });
+  window.addEventListener('keydown', retry, { once: true });
+}
+
+export function startMusic() {
+  if (!getSettings().music) {
+    want = false;
+    return;
+  }
+  want = true;
+  unlockAudio();
+  const a = audioEl();
+  if (!a) return;
+  const { ac } = audioNodes();
+  if (ac && ac.state === 'suspended') void ac.resume();
+  connectGain();
+  applyGain(level());
+  if (a.paused) {
+    a.play().catch((err: unknown) => {
+      if ((err as DOMException)?.name === 'NotAllowedError') armRetry();
+    });
+  }
 }
 
 export function stopMusic() {
-  if (timer !== null) window.clearInterval(timer);
-  timer = null;
+  want = false;
+  audioEl()?.pause();
+  applyGain(0, true);
+}
+
+/** 설정에서 볼륨을 바꾼 뒤 호출한다. (store 값은 이미 저장된 상태) */
+export function syncMusicVolume() {
+  applyGain(level());
 }

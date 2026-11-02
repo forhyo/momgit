@@ -13,9 +13,13 @@ export type Profile = {
 };
 export type Settings = {
   sound: boolean;
+  music: boolean;
+  musicVolume: number;
   round: 30 | 60 | 90;
   demo: boolean;
 };
+
+export const DEFAULT_MUSIC_VOLUME = 30;
 type State = {
   profiles: Profile[];
   activeId: string;
@@ -36,6 +40,11 @@ function uid() {
   return Math.random().toString(36).slice(2, 9);
 }
 
+function normalizeVolume(value: unknown) {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return DEFAULT_MUSIC_VOLUME;
+  return Math.min(100, Math.max(0, Math.round(value)));
+}
+
 function defaultState(): State {
   const profile: Profile = {
     id: uid(),
@@ -48,7 +57,7 @@ function defaultState(): State {
   return {
     profiles: [profile],
     activeId: profile.id,
-    settings: { sound: true, round: 60, demo: false },
+    settings: { sound: true, music: true, musicVolume: DEFAULT_MUSIC_VOLUME, round: 60, demo: false },
     plays: 0,
   };
 }
@@ -70,6 +79,8 @@ function normalize(raw: unknown): State {
     activeId: r.activeId ?? profiles[0]?.id ?? fallback.activeId,
     settings: {
       sound: r.settings?.sound ?? true,
+      music: r.settings?.music ?? true,
+      musicVolume: normalizeVolume(r.settings?.musicVolume),
       round: ([30, 60, 90] as const).includes(r.settings?.round as 30) ? (r.settings!.round as 30 | 60 | 90) : 60,
       demo: r.settings?.demo ?? false,
     },
@@ -218,6 +229,16 @@ export function awardSticker(): RunResult {
 
 export function setSound(on: boolean) {
   state.settings.sound = on;
+  save();
+}
+
+export function setMusic(on: boolean) {
+  state.settings.music = on;
+  save();
+}
+
+export function setMusicVolume(volume: number) {
+  state.settings.musicVolume = normalizeVolume(volume);
   save();
 }
 

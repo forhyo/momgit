@@ -253,6 +253,9 @@
           </div>
         </div>
         <div class="hud-right">
+          <button id="btn-full" class="hud-btn" type="button" aria-label="전체화면" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H3v6M15 3h6v6M9 21H3v-6M21 15v6h-6" /></svg>
+          </button>
           <div id="status-chip" class="status-chip">카메라를 찾는 중…</div>
         </div>
       </div>
@@ -277,6 +280,7 @@
     <dialog id="dialog-result" class="modal result-modal"></dialog>
     <dialog id="dialog-confirm" class="modal confirm-modal"></dialog>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <audio id="bgm" src="./audio/caketown-1.mp3" loop preload="none" aria-hidden="true"></audio>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

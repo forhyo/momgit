@@ -13,9 +13,10 @@ import {
 } from '../motion/track';
 import { drawScene, type Flash } from '../game/scene';
 import { sfx } from '../audio/sfx';
-import { startMusic, stopMusic } from '../audio/music';
+import { startMusic } from '../audio/music';
 import { ICONS } from '../brand';
 import { $, confirmDialog } from '../dom';
+import { enterFullscreen, exitFullscreen, fullscreenSupported, isFullscreen, toggleFullscreen } from '../fullscreen';
 import type { GameMeta } from '../game/registry';
 
 export type RoundResult = {
@@ -47,6 +48,30 @@ let wake: { release: () => Promise<void> } | null = null;
 const stage = () => $('#stage');
 const canvas = () => $<HTMLCanvasElement>('#canvas');
 const video = () => $<HTMLVideoElement>('#cam');
+
+const FS_EXPAND = `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H3v6M15 3h6v6M9 21H3v-6M21 15v6h-6" /></svg>`;
+const FS_SHRINK = `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h5V4M20 9h-5V4M4 15h5v5M20 15h-5v5" /></svg>`;
+let fullscreenWired = false;
+
+function syncFullscreenButton() {
+  const btn = document.querySelector<HTMLButtonElement>('#btn-full');
+  if (!btn) return;
+  btn.hidden = !fullscreenSupported();
+  const on = isFullscreen();
+  btn.setAttribute('aria-pressed', String(on));
+  btn.setAttribute('aria-label', on ? '전체화면 나가기' : '전체화면');
+  btn.innerHTML = on ? FS_SHRINK : FS_EXPAND;
+}
+
+function wireFullscreenButton() {
+  if (fullscreenWired) return;
+  fullscreenWired = true;
+  document.querySelector<HTMLButtonElement>('#btn-full')?.addEventListener('click', () => {
+    void toggleFullscreen();
+  });
+  document.addEventListener('fullscreenchange', syncFullscreenButton);
+  syncFullscreenButton();
+}
 
 function hideOverlay() {
   $('#stage-overlay').hidden = true;
@@ -107,18 +132,18 @@ function stopMedia() {
   video().srcObject = null;
 }
 
-export function stopRound() {
+export function stopRound(exitFull = true) {
   sessionId++;
   window.clearInterval(countdownTimer);
   window.clearTimeout(hintTimer);
   cancelAnimationFrame(raf);
-  stopMusic();
   stopMedia();
   void wake?.release().catch(() => undefined);
   wake = null;
   stage().hidden = true;
   document.body.classList.remove('playing');
   hideOverlay();
+  if (exitFull) void exitFullscreen();
 }
 
 async function requestWakeLock() {
@@ -133,7 +158,11 @@ async function requestWakeLock() {
 }
 
 export function playRound(opts: Opts) {
-  stopRound();
+  // 시작 버튼 클릭과 같은 사용자 제스처 안에서 전체화면·음악을 요청한다.
+  void enterFullscreen();
+  startMusic();
+  stopRound(false);
+  wireFullscreenButton();
   const token = ++sessionId;
   const st = stage();
   st.hidden = false;
@@ -171,7 +200,6 @@ export function playRound(opts: Opts) {
     if (finished) return;
     finished = true;
     cancelAnimationFrame(raf);
-    stopMusic();
     sfx('finish');
     camera?.stop();
     camera = null;
@@ -336,7 +364,6 @@ export function playRound(opts: Opts) {
         cd.hidden = true;
         paused = false;
         last = performance.now();
-        if (opts.game.id === 'drum') startMusic();
         return;
       }
       num.textContent = steps[i];

@@ -889,6 +889,24 @@ dialog.modal[open] { animation: modal-in 0.3s var(--ease-spring); }
 }
 .switch[aria-checked='true'] { background: var(--mint); }
 .switch[aria-checked='true'] i { transform: translateX(20px); }
+.vol-wrap { display: flex; align-items: center; gap: 9px; flex: none; }
+.vol-wrap input[type='range'] {
+  width: 120px;
+  height: 28px;
+  accent-color: var(--ink);
+  cursor: pointer;
+}
+.vol-wrap output {
+  width: 38px;
+  text-align: right;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 420px) {
+  .vol-wrap input[type='range'] { width: 92px; }
+}
 .tseg { display: inline-flex; gap: 4px; padding: 4px; border: 2px solid var(--ink); border-radius: 999px; background: var(--paper-2); }
 .tseg button { padding: 5px 11px; border: 0; border-radius: 999px; background: transparent; font-size: 12.5px; font-weight: 800; }
 .tseg button[aria-checked='true'] { background: var(--ink); color: var(--paper); }
@@ -1038,7 +1056,10 @@ dialog.modal[open] { animation: modal-in 0.3s var(--ease-spring); }
   transition: transform 0.12s;
 }
 .hud-btn:active { transform: translateY(2px); }
+.hud-btn[hidden] { display: none; }
 .hud-btn svg { width: 22px; height: 22px; }
+html:fullscreen { background: #14112b; }
+html:fullscreen body { overscroll-behavior: none; }
 .hud-title {
   font-family: var(--font-display);
   font-size: clamp(15px, 2vw, 21px);
@@ -1327,7 +1348,7 @@ dialog.modal[open] { animation: modal-in 0.3s var(--ease-spring); }
   .gm-head h2 { font-size: 27px; }
   .gm-foot .btn { min-width: 0; flex-basis: 100%; }
   .result-actions { flex-direction: column; }
-  .hud-title { max-width: 30vw; font-size: 14px; padding: 7px 10px; }
+  .hud-title { display: none; }
   .status-chip { display: none; }
   .scores { top: calc(72px + env(safe-area-inset-top)); }
   .timer { font-size: 23px; min-width: 92px; padding: 7px 13px; }

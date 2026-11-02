@@ -23,6 +23,9 @@
 - 1명 또는 2명 대결(화면 좌우 분할)
 - 판이 끝나면 스티커 1개, 12개를 모으면 마을 축제
 - 프로필 최대 4명, 이름과 얼굴 저장
+- 놀이 시작 시 지원 브라우저에서 전체화면, 결과 화면까지 유지
+- 배경 음악은 `public/audio/caketown-1.mp3`(약 4.2MB)를 사용하고, 결과 화면에서도 계속 재생
+- 설정에서 효과음·배경 음악을 따로 켜고 끄며 음악 볼륨을 조절
 
 ## 실행
 
@@ -112,10 +115,12 @@ src/
   screens/play.ts        라운드 루프, 카메라 수명주기, 데모 포인터
   motion/                카메라, MediaPipe 포즈, 트래킹/펀치 판정
   game/                  게임 6종 + 공통 캔버스 아트/배경
-  audio/                 Web Audio 합성 효과음·음악
+  audio/                 Web Audio 합성 효과음 + MP3 배경 음악 제어
+  fullscreen.ts          전체화면 진입/종료 (지원 브라우저)
 public/
   models/                pose_landmarker_lite.task
   wasm/                  MediaPipe WASM (SIMD/모듈/no-SIMD)
+  audio/                 caketown-1.mp3 (배경 음악, 약 4.2MB)
   icons/, og.png, manifest.webmanifest, sw.js
 scripts/
   make-icons.mjs         SVG → PNG 아이콘
@@ -140,11 +145,12 @@ scripts/
 ## 알려진 제한
 
 - 카카오톡·인스타그램 등의 인앱 브라우저에서는 카메라가 막힐 수 있습니다. 외부 브라우저로 열어 주세요.
-- iOS Safari는 카메라 권한과 오디오 재생 정책이 브라우저 버전에 따라 다를 수 있습니다.
+- iOS Safari는 카메라 권한과 오디오 재생 정책이 브라우저 버전에 따라 다를 수 있습니다. 아이폰 Safari는 페이지 전체화면 API를 지원하지 않아 전체화면 버튼이 숨겨지고, 화면을 꽉 채운 놀이 화면으로 표시됩니다.
+- 배경 음악은 첫 사용자 조작(놀이 시작 또는 소리 켜기) 뒤에 재생됩니다. 브라우저가 자동 재생을 막으면 다음 터치에서 다시 시도합니다.
 - 2명 대결은 점수 기록을 저장하지 않고 스티커만 지급합니다.
 - 서비스 워커는 빌드 결과에서만 등록되며, 앱 껍데기만 캐시합니다(모델/WASM 제외).
 - 시크릿 모드나 사이트 데이터 삭제 시 기록이 사라집니다.
 
 ## 라이선스
 
-개인·교육용으로 만든 프로토타입입니다. 폰트(Jua)는 SIL Open Font License, MediaPipe는 Apache-2.0을 따릅니다.
+개인·교육용으로 만든 프로토타입입니다. 폰트(Jua)는 SIL Open Font License, MediaPipe는 Apache-2.0을 따릅니다. 배경 음악(`public/audio/caketown-1.mp3`)은 사용자가 제공한 파일입니다.

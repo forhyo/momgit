@@ -26,6 +26,8 @@ import {
   session,
   setActive,
   setDemo,
+  setMusic,
+  setMusicVolume,
   setRound,
   setSound,
   totalStickers,
@@ -44,6 +46,7 @@ import {
 } from '../dom';
 import { playRound, stopRound, type RoundResult } from './play';
 import { sfx, setMuted, unlockAudio } from '../audio/sfx';
+import { startMusic, stopMusic, syncMusicVolume } from '../audio/music';
 
 let lastResult: { game: GameMeta; demo: boolean } | null = null;
 
@@ -66,9 +69,10 @@ export function initHub() {
 
 function syncSoundButton() {
   const btn = $('#btn-sound');
-  const muted = !getSettings().sound;
-  btn.setAttribute('aria-pressed', String(muted));
-  btn.setAttribute('aria-label', muted ? '소리 켜기' : '소리 끄기');
+  const s = getSettings();
+  const silent = !s.sound && !s.music;
+  btn.setAttribute('aria-pressed', String(silent));
+  btn.setAttribute('aria-label', silent ? '소리 켜기' : '소리 끄기');
 }
 
 function render() {
@@ -319,7 +323,9 @@ function handleFinish(r: RoundResult) {
 
   render();
   const dlg = $('#dialog-result');
+  let replaying = false;
   dlg.querySelector('[data-act="again"]')?.addEventListener('click', () => {
+    replaying = true;
     closeDialog('dialog-result');
     if (lastResult) startGame(lastResult.game, lastResult.demo);
   });
@@ -327,7 +333,13 @@ function handleFinish(r: RoundResult) {
     closeDialog('dialog-result');
     document.getElementById('games')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
-  dlg.addEventListener('close', () => stopRound(), { once: true });
+  dlg.addEventListener(
+    'close',
+    () => {
+      if (!replaying) stopRound();
+    },
+    { once: true },
+  );
 
   sfx('stamp');
   if (stars >= 2 || record.albumJustCompleted) {
@@ -350,14 +362,19 @@ function wireStatic() {
   $('#btn-guide').addEventListener('click', openGuide);
   $('#btn-settings').addEventListener('click', openSettings);
   $('#btn-sound').addEventListener('click', () => {
-    const next = !getSettings().sound;
+    const s = getSettings();
+    const turningOff = s.sound || s.music;
+    const next = !turningOff;
     setSound(next);
+    setMusic(next);
     setMuted(!next);
     if (next) {
       unlockAudio();
+      startMusic();
       sfx('tap');
       toast('소리를 켰어요');
     } else {
+      stopMusic();
       toast('소리를 껐어요');
     }
     syncSoundButton();
@@ -459,6 +476,18 @@ function openSettings() {
           <span>효과음</span>
           <button class="switch" type="button" id="sw-sound" aria-checked="${s.sound}" aria-label="효과음"><i></i></button>
         </div>
+        <div class="set-row">
+          <span>배경 음악</span>
+          <button class="switch" type="button" id="sw-music" aria-checked="${s.music}" aria-label="배경 음악"><i></i></button>
+        </div>
+        <div class="set-row">
+          <span>음악 볼륨</span>
+          <div class="vol-wrap">
+            <input id="vol-music" type="range" min="0" max="100" step="5" value="${s.musicVolume}" aria-label="배경 음악 볼륨" />
+            <output id="vol-out" for="vol-music">${s.musicVolume}%</output>
+          </div>
+        </div>
+        <p class="modal-note">게임을 시작하면 음악이 흐르고, 결과 화면에서도 이어져요.</p>
       </div>
       <div class="set-group">
         <h3>한 판 시간</h3>
@@ -511,6 +540,31 @@ function openSettings() {
       sfx('tap');
     }
     syncSoundButton();
+  });
+
+  const musicBtn = dlg.querySelector<HTMLButtonElement>('#sw-music')!;
+  musicBtn.addEventListener('click', () => {
+    const next = musicBtn.getAttribute('aria-checked') !== 'true';
+    musicBtn.setAttribute('aria-checked', String(next));
+    setMusic(next);
+    if (next) {
+      unlockAudio();
+      startMusic();
+      toast('배경 음악을 켰어요');
+    } else {
+      stopMusic();
+      toast('배경 음악을 껐어요');
+    }
+    syncSoundButton();
+  });
+
+  const vol = dlg.querySelector<HTMLInputElement>('#vol-music')!;
+  const volOut = dlg.querySelector<HTMLOutputElement>('#vol-out')!;
+  vol.addEventListener('input', () => {
+    const value = Number(vol.value);
+    setMusicVolume(value);
+    volOut.textContent = `${value}%`;
+    syncMusicVolume();
   });
 
   dlg.querySelectorAll<HTMLButtonElement>('[data-sec]').forEach((b) => {
