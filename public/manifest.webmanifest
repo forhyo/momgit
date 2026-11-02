@@ -1,0 +1,51 @@
+{
+  "name": "몸짓 마을",
+  "short_name": "몸짓 마을",
+  "description": "카메라 앞에서 손으로 노는 아이 몸놀이터. 1명 또는 2명, 한 판 1분, 점프 없이 상체만 써요.",
+  "lang": "ko",
+  "dir": "ltr",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f7f1df",
+  "theme_color": "#ffd23f",
+  "categories": ["games", "kids", "education"],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "풍선 가게",
+      "short_name": "풍선",
+      "url": "./?game=balloon"
+    },
+    {
+      "name": "축제 북",
+      "short_name": "북",
+      "url": "./?game=drum"
+    }
+  ]
+}

@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#ffd23f" />
+    <meta
+      name="description"
+      content="카메라 앞에서 손으로 노는 아이 몸놀이터. 1명 또는 2명, 한 판 1분, 점프 없이 상체만 써요."
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="몸짓 마을" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="몸짓 마을" />
+    <meta property="og:title" content="몸짓 마을 — 손으로 노는 1분" />
+    <meta
+      property="og:description"
+      content="카메라 앞에서 손을 뻗고, 휘젓고, 잠깐 멈추면 마을 친구들이 좋아해요. 점프 없이 상체만 쓰는 아이 몸놀이터."
+    />
+    <meta property="og:image" content="./og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="./og.png" />
+    <meta property="og:locale" content="ko_KR" />
+
+    <title>몸짓 마을 — 손으로 노는 1분</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jua&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="paper-noise" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="몸짓 마을 처음으로">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none">
+            <rect x="2.4" y="2.4" width="35.2" height="35.2" rx="12" fill="#ffd23f" stroke="#1d1a3a" stroke-width="2.8" />
+            <path d="M12 25.5c0-5.6 3.6-9.5 8-9.5s8 3.9 8 9.5" stroke="#1d1a3a" stroke-width="2.8" stroke-linecap="round" />
+            <circle cx="15.4" cy="18.2" r="2.1" fill="#1d1a3a" />
+            <circle cx="24.6" cy="18.2" r="2.1" fill="#1d1a3a" />
+            <path d="M17.5 22.2c1.5 1.3 3.5 1.3 5 0" stroke="#1d1a3a" stroke-width="2.2" stroke-linecap="round" />
+          </svg>
+        </span>
+        <span class="brand-text">
+          <strong>몸짓 마을</strong>
+          <small>MOMJIT VILLAGE</small>
+        </span>
+      </a>
+      <nav class="top-actions" aria-label="사이트 메뉴">
+        <a class="top-link" href="./help.html">도움말</a>
+        <button id="btn-sound" class="icon-btn" type="button" aria-pressed="false" aria-label="소리 끄기">
+          <span class="ic-on"></span><span class="ic-off"></span>
+        </button>
+        <button id="btn-settings" class="icon-btn" type="button" aria-label="설정">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3.2" />
+            <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 0 1-4 0v-.08A1.7 1.7 0 0 0 8.95 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 0 1 0-4h.08A1.7 1.7 0 0 0 4.6 8.95a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 8.95 4.6a1.7 1.7 0 0 0 1.03-1.56V3a2 2 0 0 1 4 0v.08a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V8.95c.26.63.87 1.03 1.56 1.03H21a2 2 0 0 1 0 4h-.08a1.7 1.7 0 0 0-1.52 1.02z" />
+          </svg>
+        </button>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="ribbon">손끝으로 노는 1분</p>
+          <h1>몸으로 노는<br /><span class="hl">작은 마을</span></h1>
+          <p class="lede">
+            손을 뻗고, 휘젓고, 잠깐 멈추면 마을 친구들이 좋아해요.<br />
+            점프는 하지 않아요. 어깨와 팔만 움직여요.
+          </p>
+          <ul class="tags">
+            <li>1~2명</li>
+            <li>한 판 1분</li>
+            <li>준비물 없음</li>
+          </ul>
+          <div class="hero-actions">
+            <button class="btn btn-primary" id="btn-start" type="button">
+              마을로 들어가기
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h13M13 6l6 6-6 6" />
+              </svg>
+            </button>
+            <button class="btn btn-ghost" id="btn-guide" type="button">노는 방법</button>
+          </div>
+          <p class="privacy-note">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3l7 3v5.5c0 4.3-2.9 7.7-7 9.5-4.1-1.8-7-5.2-7-9.5V6z" />
+              <path d="M9.2 12.2l2 2 3.6-4" />
+            </svg>
+            카메라 영상은 이 기기 안에서만 쓰고, 저장하거나 보내지 않아요.
+          </p>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="hero-blob"></div>
+          <div class="hero-mascot" id="hero-mascot"></div>
+          <span class="doodle doodle-star">★</span>
+          <span class="doodle doodle-plus">＋</span>
+          <span class="doodle doodle-spark"></span>
+          <div class="tape tape-a"></div>
+          <div class="tape tape-b"></div>
+        </div>
+      </section>
+
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-track">
+          <span>손을 뻗으면 풍선이 톡!</span><i>✦</i>
+          <span>빠르게 휘두르면 얼음이 깨져요</span><i>✦</i>
+          <span>잠깐 멈추면 별이 모여요</span><i>✦</i>
+          <span>가로로 돌리면 더 넓게 놀아요</span><i>✦</i>
+          <span>손을 뻗으면 풍선이 톡!</span><i>✦</i>
+          <span>빠르게 휘두르면 얼음이 깨져요</span><i>✦</i>
+          <span>잠깐 멈추면 별이 모여요</span><i>✦</i>
+          <span>가로로 돌리면 더 넓게 놀아요</span><i>✦</i>
+        </div>
+      </div>
+
+      <section class="section profiles" aria-labelledby="profiles-h">
+        <div class="section-head compact">
+          <div>
+            <p class="eyebrow">01 — 누구세요?</p>
+            <h2 id="profiles-h">누가 놀까요?</h2>
+          </div>
+          <div class="seg" role="radiogroup" aria-label="몇 명이 놀까요?">
+            <button type="button" role="radio" data-players="1" aria-checked="true">1명</button>
+            <button type="button" role="radio" data-players="2" aria-checked="false">2명 대결</button>
+          </div>
+        </div>
+        <div class="profile-row">
+          <div id="profile-list" class="profile-list"></div>
+          <button id="btn-add-profile" class="profile-add" type="button" aria-label="새 사람 추가">
+            <span>＋</span><small>사람 추가</small>
+          </button>
+        </div>
+        <p class="hint" id="player-hint">사람을 고르면 이 기기에 기록이 쌓여요.</p>
+      </section>
+
+      <section class="section games" id="games" aria-labelledby="games-h">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">02 — 오늘의 놀이터</p>
+            <h2 id="games-h">마을 친구들을 도와주세요</h2>
+            <p class="section-sub">놀이를 하나 고르면 카메라가 켜져요. 한 판은 1분이에요.</p>
+          </div>
+          <div class="legend">
+            <span><i class="dot dot-hand"></i>손 대기</span>
+            <span><i class="dot dot-punch"></i>손 휘두르기</span>
+          </div>
+        </div>
+        <div id="game-grid" class="game-grid"></div>
+      </section>
+
+      <section class="section album" id="album" aria-labelledby="album-h">
+        <div class="album-inner">
+          <div class="album-head">
+            <div>
+              <p class="eyebrow">03 — 칭찬 스티커</p>
+              <h2 id="album-h">한 판 놀 때마다 스티커 하나</h2>
+              <p class="section-sub">스티커를 모아 앨범을 채워 보세요. 다 모으면 마을 축제가 열려요!</p>
+            </div>
+            <div class="album-progress">
+              <div class="progress-ring" id="progress-ring">
+                <svg viewBox="0 0 80 80" aria-hidden="true">
+                  <circle class="ring-bg" cx="40" cy="40" r="33" />
+                  <circle class="ring-fg" id="ring-fg" cx="40" cy="40" r="33" />
+                </svg>
+                <strong id="sticker-count">0</strong>
+              </div>
+              <span id="sticker-total">/ 12</span>
+            </div>
+          </div>
+          <div id="sticker-grid" class="sticker-grid"></div>
+          <p class="album-note" id="album-note">첫 스티커를 기다리고 있어요.</p>
+        </div>
+      </section>
+
+      <section class="section howto" aria-labelledby="howto-h">
+        <p class="eyebrow">04 — 이렇게 놀아요</p>
+        <h2 id="howto-h">카메라 앞에 서면 준비 끝</h2>
+        <ol class="steps">
+          <li>
+            <span class="step-num">1</span>
+            <div class="step-art" data-art="step-camera"></div>
+            <h3>카메라를 켜요</h3>
+            <p>주소창의 카메라를 <b>허용</b>해 주세요. 영상은 밖으로 나가지 않아요.</p>
+          </li>
+          <li>
+            <span class="step-num">2</span>
+            <div class="step-art" data-art="step-space"></div>
+            <h3>한 걸음 뒤로</h3>
+            <p>머리부터 손끝까지 화면에 다 보이게 서 주세요.</p>
+          </li>
+          <li>
+            <span class="step-num">3</span>
+            <div class="step-art" data-art="step-play"></div>
+            <h3>손으로 놀아요</h3>
+            <p>손을 대거나, 빠르게 휘두르거나, 잠깐 멈춰요. 점프는 없어요.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="cta-band">
+        <div>
+          <p class="eyebrow">오늘 한 판 어때요?</p>
+          <h2>마을은 지금도<br />놀이를 기다려요</h2>
+        </div>
+        <button class="btn btn-dark" id="btn-start-2" type="button">
+          놀이 고르러 가기
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h13M13 6l6 6-6 6" />
+          </svg>
+        </button>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-brand">
+        <strong>몸짓 마을</strong>
+        <p>카메라 앞에서 손으로 노는 아이 몸놀이터.<br />점프 없이, 조용하게, 1분 동안.</p>
+      </div>
+      <div class="footer-links">
+        <a href="./help.html">도움말</a>
+        <a href="./privacy.html">개인정보처리방침</a>
+        <a href="mailto:hello@momjit.village">문의하기</a>
+      </div>
+      <p class="footer-note">© 2026 몸짓 마을 · made for small bodies with big energy</p>
+    </footer>
+
+    <div id="stage" class="stage" hidden aria-label="놀이 화면">
+      <video id="cam" class="cam" playsinline muted autoplay></video>
+      <canvas id="canvas" class="canvas"></canvas>
+      <div class="hud">
+        <div class="hud-left">
+          <button id="btn-back" class="hud-btn" type="button" aria-label="그만하기">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l-7 7 7 7M3 12h18" /></svg>
+          </button>
+          <div class="hud-title" id="hud-title">풍선 가게</div>
+        </div>
+        <div class="hud-center">
+          <div class="timer" id="timer">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l2.6 1.6M9.5 2.5h5" /></svg>
+            <strong id="time">60</strong>
+          </div>
+        </div>
+        <div class="hud-right">
+          <div id="status-chip" class="status-chip">카메라를 찾는 중…</div>
+        </div>
+      </div>
+      <div class="scores" id="scores"></div>
+      <div class="stage-hint" id="stage-hint"></div>
+      <div class="countdown" id="countdown" hidden><span id="countdown-num">3</span></div>
+      <div class="stage-overlay" id="stage-overlay" hidden>
+        <div class="stage-card">
+          <div class="stage-card-icon" id="stage-card-icon"></div>
+          <h2 id="stage-card-title">카메라를 준비하고 있어요</h2>
+          <p id="stage-card-text">잠깐만 기다려 주세요.</p>
+          <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="stage-card-actions" id="stage-card-actions"></div>
+        </div>
+      </div>
+    </div>
+
+    <dialog id="dialog-game" class="modal game-modal"></dialog>
+    <dialog id="dialog-guide" class="modal guide-modal"></dialog>
+    <dialog id="dialog-settings" class="modal settings-modal"></dialog>
+    <dialog id="dialog-profile" class="modal profile-modal"></dialog>
+    <dialog id="dialog-result" class="modal result-modal"></dialog>
+    <dialog id="dialog-confirm" class="modal confirm-modal"></dialog>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
