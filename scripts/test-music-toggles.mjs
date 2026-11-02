@@ -22,7 +22,7 @@ await page.locator('[data-act="ok"]').click();
 await page.waitForTimeout(700);
 
 const hubPlaying = await page.evaluate(() => ({
-  paused: document.getElementById('bgm')?.paused,
+  paused: document.getElementById('bgm-hub')?.paused,
   fullscreen: document.fullscreenElement?.tagName ?? null,
   soundPressed: document.getElementById('btn-sound')?.getAttribute('aria-pressed'),
 }));
@@ -32,7 +32,7 @@ await page.waitForTimeout(400);
 const allOff = await page.evaluate(() => {
   const s = JSON.parse(localStorage.getItem('momjit.village.v1')).settings;
   return {
-    paused: document.getElementById('bgm')?.paused,
+    paused: document.getElementById('bgm-hub')?.paused,
     sound: s.sound,
     music: s.music,
     pressed: document.getElementById('btn-sound')?.getAttribute('aria-pressed'),
@@ -44,11 +44,11 @@ await page.waitForTimeout(700);
 const allOn = await page.evaluate(() => {
   const s = JSON.parse(localStorage.getItem('momjit.village.v1')).settings;
   return {
-    paused: document.getElementById('bgm')?.paused,
+    paused: document.getElementById('bgm-hub')?.paused,
     sound: s.sound,
     music: s.music,
     pressed: document.getElementById('btn-sound')?.getAttribute('aria-pressed'),
-    currentTime: Math.round(document.getElementById('bgm')?.currentTime ?? 0),
+    currentTime: Math.round(document.getElementById('bgm-hub')?.currentTime ?? 0),
   };
 });
 

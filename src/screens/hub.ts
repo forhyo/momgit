@@ -65,6 +65,8 @@ export function initHub() {
   wireStatic();
   maybeInAppBanner();
   wireDeepLink();
+  // 놀이 고르는 화면의 배경 음악. 자동재생이 막히면 첫 터치에서 시작한다.
+  startMusic('hub');
 }
 
 function syncSoundButton() {
@@ -370,7 +372,7 @@ function wireStatic() {
     setMuted(!next);
     if (next) {
       unlockAudio();
-      startMusic();
+      startMusic('hub');
       sfx('tap');
       toast('소리를 켰어요');
     } else {
@@ -549,7 +551,7 @@ function openSettings() {
     setMusic(next);
     if (next) {
       unlockAudio();
-      startMusic();
+      startMusic('hub');
       toast('배경 음악을 켰어요');
     } else {
       stopMusic();

@@ -6,6 +6,7 @@ import type { Punch } from './types';
 type Star = {
   player: number;
   slot: number;
+  zone: number;
   x: number;
   y: number;
   r: number;
@@ -31,19 +32,46 @@ export class StarGame extends BaseGame {
     }
   }
 
-  private make(player: number, slot: number): Star {
+  private zoneCols() {
+    return this.players === 2 ? 2 : 3;
+  }
+
+  private zoneCount() {
+    return this.zoneCols() * 3;
+  }
+
+  /** 지금 다른 별이 쓰지 않는 구역 중 하나를 고른다. */
+  private pickZone(player: number, current?: Star) {
+    const count = this.zoneCount();
+    const used = new Set(
+      this.stars.filter((s) => s.player === player && s !== current).map((s) => s.zone),
+    );
+    const all = Array.from({ length: count }, (_, i) => i);
+    let candidates = all.filter((z) => !used.has(z) && z !== current?.zone);
+    if (!candidates.length) candidates = all.filter((z) => z !== current?.zone);
+    if (!candidates.length) candidates = all;
+    return candidates[Math.floor(Math.random() * candidates.length)] ?? 0;
+  }
+
+  private make(player: number, slot: number, current?: Star): Star {
     const f = this.field(player);
     const sizeVar = [1, 0.82, 1.12, 0.9][this.seq++ % 4];
     const r = Math.max(24, Math.min(f.w, f.h) * (this.players === 2 ? 0.105 : 0.085) * sizeVar);
-    const cw = f.w / 2;
-    const ch = f.h / 2;
-    const c = slot % 2;
-    const row = Math.floor(slot / 2) % 2;
+    const cols = this.zoneCols();
+    const rows = 3;
+    const zone = this.pickZone(player, current);
+    const col = zone % cols;
+    const row = Math.floor(zone / cols);
+    const padX = f.w * 0.13;
+    const padY = f.h * 0.15;
+    const cw = (f.w - padX * 2) / cols;
+    const ch = (f.h - padY * 2) / rows;
     return {
       player,
       slot,
-      x: f.x + cw * (c + 0.5) + (Math.random() - 0.5) * cw * 0.24,
-      y: f.y + ch * (row + 0.5) + (Math.random() - 0.5) * ch * 0.24,
+      zone,
+      x: f.x + padX + cw * (col + 0.5) + (Math.random() - 0.5) * cw * 0.2,
+      y: f.y + padY + ch * (row + 0.5) + (Math.random() - 0.5) * ch * 0.2,
       r,
       life: 5,
       max: 5,
@@ -54,7 +82,8 @@ export class StarGame extends BaseGame {
   }
 
   private respawn(s: Star) {
-    const fresh = this.make(s.player, s.slot);
+    const fresh = this.make(s.player, s.slot, s);
+    s.zone = fresh.zone;
     s.x = fresh.x;
     s.y = fresh.y;
     s.r = fresh.r;
@@ -107,7 +136,8 @@ export class StarGame extends BaseGame {
     this.w = w;
     this.h = h;
     for (const s of this.stars) {
-      const fresh = this.make(s.player, s.slot);
+      const fresh = this.make(s.player, s.slot, s);
+      s.zone = fresh.zone;
       s.x = fresh.x;
       s.y = fresh.y;
       s.r = fresh.r;

@@ -43,7 +43,7 @@ await page.locator('[data-demo]').click();
 await page.waitForTimeout(4500);
 
 const playing = await page.evaluate(() => {
-  const a = document.getElementById('bgm');
+  const a = document.getElementById('bgm-game');
   return {
     fullscreen: document.fullscreenElement?.tagName ?? null,
     paused: a?.paused,

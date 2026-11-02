@@ -8,6 +8,7 @@ export const HITS_TO_BREAK = 5;
 type Rect = { x: number; y: number; w: number; h: number };
 type Block = Rect & {
   player: number;
+  slot: number;
   damage: number;
   wobble: number;
   seed: number;
@@ -70,30 +71,32 @@ export class IceGame extends BaseGame {
 
   private spawn(player: number) {
     const rects = layoutBlocks(this.count(), this.field(player));
-    for (const r of rects) {
+    rects.forEach((r, slot) => {
       this.blocks.push({
         ...r,
         player,
+        slot,
         damage: 0,
         wobble: 0,
         seed: this.seq * 1.7,
         color: CONFETTI[(this.seq + player) % CONFETTI.length],
       });
       this.seq++;
-    }
+    });
   }
 
-  private relayout(player: number) {
-    const alive = this.blocks.filter((b) => b.player === player);
-    const rects = layoutBlocks(alive.length, this.field(player));
-    alive.forEach((b, i) => {
-      if (rects[i]) {
-        b.x = rects[i].x;
-        b.y = rects[i].y;
-        b.w = rects[i].w;
-        b.h = rects[i].h;
-      }
-    });
+  /** 화면 크기가 바뀌어도 깨지지 않은 얼음은 원래 자리(슬롯)를 지킨다. */
+  private layout(player: number) {
+    const rects = layoutBlocks(this.count(), this.field(player));
+    for (const b of this.blocks) {
+      if (b.player !== player) continue;
+      const r = rects[b.slot];
+      if (!r) continue;
+      b.x = r.x;
+      b.y = r.y;
+      b.w = r.w;
+      b.h = r.h;
+    }
   }
 
   protected step(dt: number, _hands: Hand[]) {
@@ -140,7 +143,6 @@ export class IceGame extends BaseGame {
       );
       this.particles.ring(target.x + target.w / 2, target.y + target.h / 2, C.card, target.w * 0.3);
       this.blocks = this.blocks.filter((b) => b !== target);
-      this.relayout(target.player);
 
       if (!this.blocks.some((b) => b.player === target.player)) {
         this.levels[target.player] += 1;
@@ -157,7 +159,7 @@ export class IceGame extends BaseGame {
   resize(w: number, h: number) {
     this.w = w;
     this.h = h;
-    for (let p = 0; p < this.players; p++) this.relayout(p);
+    for (let p = 0; p < this.players; p++) this.layout(p);
   }
 
   render(ctx: CanvasRenderingContext2D, _w: number, _h: number, time: number) {

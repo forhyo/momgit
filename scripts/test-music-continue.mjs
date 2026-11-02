@@ -34,7 +34,7 @@ await page.locator('[data-demo]').click();
 await page.waitForTimeout(4000);
 
 const before = await page.evaluate(() => {
-  const a = document.getElementById('bgm');
+  const a = document.getElementById('bgm-game');
   return {
     fullscreen: document.fullscreenElement?.tagName ?? null,
     paused: a?.paused,
@@ -46,7 +46,7 @@ const before = await page.evaluate(() => {
 await page.waitForSelector('#dialog-result[open]', { timeout: 38000 });
 await page.waitForTimeout(500);
 const afterFinish = await page.evaluate(() => {
-  const a = document.getElementById('bgm');
+  const a = document.getElementById('bgm-game');
   return {
     fullscreen: document.fullscreenElement?.tagName ?? null,
     paused: a?.paused,
@@ -59,7 +59,7 @@ const afterFinish = await page.evaluate(() => {
 await page.locator('[data-act="again"]').click();
 await page.waitForTimeout(1200);
 const afterAgain = await page.evaluate(() => {
-  const a = document.getElementById('bgm');
+  const a = document.getElementById('bgm-game');
   return {
     fullscreen: document.fullscreenElement?.tagName ?? null,
     paused: a?.paused,
@@ -74,11 +74,13 @@ await page.waitForTimeout(250);
 await page.locator('[data-act="ok"]').click();
 await page.waitForTimeout(700);
 const afterExit = await page.evaluate(() => {
-  const a = document.getElementById('bgm');
+  const hub = document.getElementById('bgm-hub');
+  const game = document.getElementById('bgm-game');
   return {
     fullscreen: document.fullscreenElement?.tagName ?? null,
-    paused: a?.paused,
-    currentTime: a ? Math.round(a.currentTime) : null,
+    hubPaused: hub?.paused,
+    gamePaused: game?.paused,
+    hubTime: hub ? Math.round(hub.currentTime) : null,
     stageHidden: document.getElementById('stage')?.hidden,
   };
 });

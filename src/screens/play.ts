@@ -132,7 +132,7 @@ function stopMedia() {
   video().srcObject = null;
 }
 
-export function stopRound(exitFull = true) {
+export function stopRound(exitFull = true, toHubMusic = true) {
   sessionId++;
   window.clearInterval(countdownTimer);
   window.clearTimeout(hintTimer);
@@ -144,6 +144,7 @@ export function stopRound(exitFull = true) {
   document.body.classList.remove('playing');
   hideOverlay();
   if (exitFull) void exitFullscreen();
+  if (toHubMusic) startMusic('hub');
 }
 
 async function requestWakeLock() {
@@ -160,8 +161,8 @@ async function requestWakeLock() {
 export function playRound(opts: Opts) {
   // 시작 버튼 클릭과 같은 사용자 제스처 안에서 전체화면·음악을 요청한다.
   void enterFullscreen();
-  startMusic();
-  stopRound(false);
+  startMusic('game');
+  stopRound(false, false);
   wireFullscreenButton();
   const token = ++sessionId;
   const st = stage();

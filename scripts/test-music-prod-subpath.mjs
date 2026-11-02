@@ -6,7 +6,7 @@ const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
 const bad = [];
 const audioResponses = [];
 page.on('response', (r) => {
-  if (r.url().includes('caketown')) audioResponses.push({ status: r.status(), url: r.url() });
+  if (r.url().includes('.mp3')) audioResponses.push({ status: r.status(), url: r.url() });
   if (r.status() >= 400) bad.push(`${r.status()} ${r.url()}`);
 });
 page.on('pageerror', (e) => bad.push(`pageerror ${e.message}`));
@@ -21,7 +21,7 @@ await page.waitForTimeout(200);
 await page.locator('[data-demo]').click();
 await page.waitForTimeout(3500);
 const state = await page.evaluate(() => {
-  const a = document.getElementById('bgm');
+  const a = document.getElementById('bgm-game');
   return {
     fullscreen: document.fullscreenElement?.tagName ?? null,
     paused: a?.paused,
