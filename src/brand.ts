@@ -295,6 +295,45 @@ function drumArt() {
   </svg>`;
 }
 
+function shadowArt() {
+  return `${artBase('#342b5c')}
+    <path d="M0 0 H320 V26 Q300 38 280 26 Q260 38 240 26 Q220 38 200 26 Q180 38 160 26 Q140 38 120 26 Q100 38 80 26 Q60 38 40 26 Q20 38 0 26 Z" fill="#ff6b57" ${S} stroke-width="4"/>
+    <path d="M160 20 L48 180 H272 Z" fill="#ffd23f" opacity=".16"/>
+    <ellipse cx="160" cy="180" rx="112" ry="18" fill="#1d1a3a" opacity=".3"/>
+    <path d="M0 176 Q80 160 160 174 Q240 188 320 168 V200 H0 Z" fill="#241d45" ${S} stroke-width="4"/>
+    <g fill="#0f0c26" opacity=".88">
+      <circle cx="160" cy="94" r="25"/>
+      <path d="M139 120 Q160 112 181 120 L188 178 Q160 188 132 178 Z"/>
+      <path d="M139 130 L92 66" fill="none" stroke="#0f0c26" stroke-width="15" stroke-linecap="round"/>
+      <path d="M181 130 L228 66" fill="none" stroke="#0f0c26" stroke-width="15" stroke-linecap="round"/>
+      <circle cx="92" cy="66" r="10"/>
+      <circle cx="228" cy="66" r="10"/>
+    </g>
+    <circle cx="92" cy="66" r="24" fill="none" stroke="#ffd23f" stroke-width="4" stroke-dasharray="6 7"/>
+    <circle cx="228" cy="66" r="24" fill="none" stroke="#ffd23f" stroke-width="4" stroke-dasharray="6 7"/>
+    ${glove(92, 66, -18, 0.55, '#ffd23f')}
+    ${glove(228, 66, 18, 0.55, '#ffd23f')}
+    <path d="${starPath(280, 42, 14)}" fill="#fffdf6" ${S} stroke-width="3"/>
+    <path d="M42 48 L36 36 L30 48 L18 54 L30 60 L36 72 L42 60 L54 54 Z" fill="#c9b6ff" ${S} stroke-width="3"/>
+  </svg>`;
+}
+
+function brushArt() {
+  const dot = (x: number, y: number, c: string) => `<circle cx="${x}" cy="${y}" r="4" fill="${c}" ${S} stroke-width="2"/>`;
+  return `${artBase('#e2f6ff')}
+    <path d="M20 152 Q60 38 160 38 Q260 38 300 152" fill="none" stroke="#ff6b57" stroke-width="27" stroke-linecap="round" opacity=".9"/>
+    <path d="M38 160 Q78 66 160 66 Q242 66 282 160" fill="none" stroke="#ffd23f" stroke-width="21" stroke-linecap="round" opacity=".95"/>
+    <path d="M55 166 Q90 92 160 92 Q230 92 265 166" fill="none" stroke="#2ed3a0" stroke-width="15" stroke-linecap="round"/>
+    <path d="M74 170 Q102 118 160 118 Q218 118 246 170" fill="none" stroke="#2f5bff" stroke-width="10" stroke-linecap="round"/>
+    <path d="M82 148 Q120 104 160 104 Q200 104 238 148" fill="none" stroke="#fffdf6" stroke-width="5" stroke-dasharray="3 11" stroke-linecap="round"/>
+    ${dot(60, 82, '#ffb3c7')}${dot(252, 68, '#c9b6ff')}${dot(284, 118, '#ffd23f')}${dot(32, 118, '#2ed3a0')}
+    ${glove(248, 142, -22, 0.72, '#ff6b57')}
+    <path d="M214 108 Q198 82 208 60 Q220 36 246 40" fill="none" stroke="${INK}" stroke-width="3.4" stroke-dasharray="2 8" stroke-linecap="round"/>
+    <path d="${starPath(252, 36, 12)}" fill="#ffd23f" ${S} stroke-width="3"/>
+    <path d="M38 178 Q60 170 80 178 M142 184 Q160 176 182 184 M242 178 Q264 170 286 178" stroke="${INK}" stroke-width="3" stroke-linecap="round" opacity=".35"/>
+  </svg>`;
+}
+
 export const GAME_ART = {
   balloon: balloonArt,
   ice: iceArt,
@@ -302,6 +341,8 @@ export const GAME_ART = {
   mole: moleArt,
   orchard: orchardArt,
   drum: drumArt,
+  shadow: shadowArt,
+  brush: brushArt,
 } as const;
 
 /* ==========================================================================
@@ -528,6 +569,8 @@ export const ICONS = {
   hand: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 11V5.5a1.8 1.8 0 0 1 3.6 0V11M11.6 10V4.2a1.8 1.8 0 0 1 3.6 0V11M15.2 11V6.4a1.8 1.8 0 0 1 3.6 0v7.2c0 3.4-2.4 6.4-5.8 6.4-2.6 0-4.3-1.2-5.7-3.4L4.4 12a1.9 1.9 0 0 1 3-2.3L8.6 11"/></svg>`,
   punch: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13V7.2a1.7 1.7 0 0 1 3.4 0V12M9.4 11V5.4a1.7 1.7 0 0 1 3.4 0V11M12.8 11V6.2a1.7 1.7 0 0 1 3.4 0V12"/><path d="M16.2 10.5h1.2a2 2 0 0 1 2 2v3.2A5.8 5.8 0 0 1 13.6 21h-.8a5.6 5.6 0 0 1-4.4-2.2L5 14.5"/><path d="M3 10.5l3 .5"/></svg>`,
   hold: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>`,
+  pose: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V13l-2-2a2 2 0 0 1 2.8-2.8L9 10V7a1.8 1.8 0 0 1 3.6 0v3-5a1.8 1.8 0 0 1 3.6 0v5-3a1.8 1.8 0 0 1 3.6 0v8.4A5.6 5.6 0 0 1 14.2 21z"/><path d="M3 3l2 2M21 3l-2 2"/></svg>`,
+  trace: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18c4-1 3-8 7.5-8S14 18 19 16"/><circle cx="5" cy="18" r="2.2"/><path d="M16 4l3 3M17.5 3.5l3 3"/><circle cx="19" cy="16" r="1.6" fill="currentColor" stroke="none"/></svg>`,
   camera: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5a2 2 0 0 1 2-2h2l1.5-2h7l1.5 2h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.6"/></svg>`,
   sound: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.6L13 5v14l-5.4-4.5H4z"/><path d="M16.5 9.2a4 4 0 0 1 0 5.6M19.2 6.6a8 8 0 0 1 0 10.8"/></svg>`,
   info: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>`,

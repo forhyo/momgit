@@ -12,6 +12,7 @@ import {
   type PunchEvent,
 } from '../motion/track';
 import { drawScene, type Flash } from '../game/scene';
+import { fieldOf } from '../game/types';
 import { sfx } from '../audio/sfx';
 import { startMusic } from '../audio/music';
 import { ICONS } from '../brand';
@@ -268,7 +269,15 @@ export function playRound(opts: Opts) {
     if (opts.demo) {
       if (pointer.seen) {
         const player = opts.players === 2 && pointer.x > w / 2 ? 1 : 0;
-        hands = [{ hand: 15, x: pointer.x, y: pointer.y, player }];
+        const demoHands: HandSample[] = [{ hand: 15, x: pointer.x, y: pointer.y, player }];
+        // 그림자 극장은 두 손이 필요하므로 데모에서는 마우스 위치를 가운데 기준으로
+        // 좌우 대칭으로 복제해 두 손처럼 움직일 수 있게 한다.
+        if (opts.game.control === 'pose') {
+          const f = fieldOf(player, opts.players, w, h);
+          const mirrorX = f.x + f.w - Math.min(f.w, Math.max(0, pointer.x - f.x));
+          demoHands.push({ hand: 16, x: mirrorX, y: pointer.y, player });
+        }
+        hands = demoHands;
         if (pointer.t > 0) {
           const gap = (now - pointer.t) / 1000;
           if (gap > 0 && gap < 0.26) {

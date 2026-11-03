@@ -6,11 +6,13 @@ import { StarGame } from './star';
 import { MoleGame } from './mole';
 import { OrchardGame } from './orchard';
 import { DrumGame } from './drum';
+import { ShadowGame } from './shadow';
+import { BrushGame } from './brush';
 
-export const GAME_IDS = ['balloon', 'ice', 'star', 'mole', 'orchard', 'drum'] as const;
+export const GAME_IDS = ['balloon', 'ice', 'star', 'mole', 'orchard', 'drum', 'shadow', 'brush'] as const;
 export type GameId = (typeof GAME_IDS)[number];
 
-export type ControlKind = 'hand' | 'punch' | 'hold' | 'move';
+export type ControlKind = 'hand' | 'punch' | 'hold' | 'move' | 'pose' | 'trace';
 
 export type GameMeta = {
   id: GameId;
@@ -113,6 +115,34 @@ export const GAMES: GameMeta[] = [
     create: (p, s, w, h) => new DrumGame(p, s, w, h),
     tiers: [18, 32],
   },
+  {
+    id: 'shadow',
+    title: '그림자 극장',
+    tagline: '두 팔로 그림자를!',
+    desc: '무대 위 그림자와 똑같이 두 팔을 움직여요. 잠깐 그대로 유지하면 장면이 완성돼요.',
+    control: 'pose',
+    controlLabel: '두 팔 모양',
+    hint: '그림자와 같은 모양으로 두 팔을 맞춰요',
+    tip: '두 손이 모두 보이게 서서 잠깐 멈춰 보세요.',
+    color: '#342b5c',
+    art: GAME_ART.shadow,
+    create: (p, s, w, h) => new ShadowGame(p, s, w, h),
+    tiers: [12, 22],
+  },
+  {
+    id: 'brush',
+    title: '무지개 붓',
+    tagline: '손끝으로 그려요',
+    desc: '커다란 점선을 손끝으로 따라가면 알록달록 그림이 완성돼요.',
+    control: 'trace',
+    controlLabel: '손끝 그리기',
+    hint: '점선을 따라 손끝을 움직여요',
+    tip: '선에서 조금 벗어나도 괜찮아요. 시작점부터 따라가세요.',
+    color: '#e2f6ff',
+    art: GAME_ART.brush,
+    create: (p, s, w, h) => new BrushGame(p, s, w, h),
+    tiers: [24, 42],
+  },
 ];
 
 export function gameById(id: string): GameMeta {
@@ -129,5 +159,6 @@ export function starsFor(game: GameMeta, score: number, seconds: number) {
 }
 
 export function controlIcon(kind: ControlKind) {
-  return ICONS[kind === 'hand' ? 'hand' : kind === 'punch' ? 'punch' : kind === 'hold' ? 'hold' : 'hand'];
+  if (kind === 'move') return ICONS.hand;
+  return ICONS[kind];
 }
